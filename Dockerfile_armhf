@@ -1,0 +1,29 @@
+ARG ARCH=frommakefile
+ARG DOCKERSRC=frommakefile
+ARG USERNAME=frommakefile
+#
+FROM ${USERNAME}/${DOCKERSRC}:${ARCH}
+#
+ARG PUID=1001
+ARG PGID=1001
+#
+RUN set -xe \
+    && addgroup -g ${PGID} -S alpine \
+    && adduser -u ${PUID} -G alpine -h /home/alpine -D alpine \
+    && apk add --no-cache --purge -uU curl \
+    && VERSION=$(curl -SL https://api.github.com/repos/adnanh/webhook/releases/latest | awk '/tag_name/{print $4;exit}' FS='[""]' | sed -e 's_v__') \
+    && echo "Using version: $VERSION" \
+    && curl -o /tmp/webhook-linux-arm.tar.gz -SL https://github.com/adnanh/webhook/releases/download/${VERSION}/webhook-linux-arm.tar.gz \
+    && tar zxf /tmp/webhook-linux-arm.tar.gz -C /usr/local \
+    && ln -s /usr/local/webhook-linux-arm/webhook /usr/local/bin \
+    && chown -R alpine:alpine /usr/local/webhook-linux-arm/ \
+    && chown -R alpine:alpine /usr/local/bin/webhook \
+    && rm -rf /var/cache/apk/* /tmp/*
+#
+COPY root/ /
+#
+# VOLUME /etc/webhoook/
+#
+EXPOSE 9000
+#
+ENTRYPOINT ["/init"]

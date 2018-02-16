@@ -1,0 +1,6 @@
+#!/usr/bin/with-contenv sh
+
+cd /etc/webhook || exit 1;
+HOOKPARAMS=${HOOKPARAMS:- -verbose}
+
+s6-setuidgid alpine webhook -hotreload -hooks=/etc/webhook/hooks.json ${HOOKPARAMS}
