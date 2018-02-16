@@ -60,14 +60,19 @@ Before you run..
 * Default hooks dir is `/etc/webhook/`.
 
 * config is loaded from `/etc/webhook/hooks.json`, a simple
-  default is provided, edit this file or mount your own.
+  default is provided, edit this file or mount your own. The
+  location of the the file can be customized by setting the
+  variable `HOOKSJSON`.
 
-* Webhook runs under the user `alpine`.
+* To fetch the hooks.json file from a url before start, pass it in
+  the env variable `HOOKSURL`.
 
 * For custom runtime parametes, pass them in the environment
   variable `HOOKPARAMS`. (check the defaults in the `makefile`)
 
 * Checkout the [docs][137] for more information about writing hooks.
+
+* Webhook runs under the user `alpine`.
 
 Running `make` starts the service.
 

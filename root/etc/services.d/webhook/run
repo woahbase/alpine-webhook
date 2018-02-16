@@ -1,6 +1,17 @@
 #!/usr/bin/with-contenv sh
 
 cd /etc/webhook || exit 1;
-HOOKPARAMS=${HOOKPARAMS:- -verbose}
 
-s6-setuidgid alpine webhook -hotreload -hooks=/etc/webhook/hooks.json ${HOOKPARAMS}
+# params
+HOOKPARAMS=${HOOKPARAMS:- -verbose -hotreload}
+# default hooks json
+HOOKSJSON=${HOOKSJSON:-/etc/webhook/hooks.json}
+
+# HOOKSURL=${HOOKSURL:-https://raw.githubusercontent.com/woahbase/alpine-webhook/master/root/etc/webhook/hooks.json}
+# fetch hook url if passed
+[[ -n "${HOOKSURL}" ]] && (
+    echo "fetching hooks from ${HOOKSURL}";
+    curl -o ${HOOKSJSON} -jkSL "${HOOKSURL}";
+)
+
+s6-setuidgid alpine webhook -hooks=${HOOKSJSON} ${HOOKPARAMS}

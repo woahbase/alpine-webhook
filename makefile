@@ -16,7 +16,9 @@ IMAGETAG  := $(USERNAME)/$(DOCKEREPO):$(ARCH)
 
 CNTNAME   := $(SVCNAME) # name for container name : docker_name, hostname : name
 
-HOOKPARAMS := "-verbose -ip 0.0.0.0 -port 9000 -nopanic -urlprefix webhooks" # these params are passed to the binary
+HOOKPARAMS := "-verbose -ip 0.0.0.0 -port 9000 -nopanic -urlprefix webhooks -hotreload" # these params are passed to the binary
+HOOKSJSON  := # /etc/webhook/hooks.json
+HOOKSURL   := # https://raw.githubusercontent.com/woahbase/alpine-webhook/master/root/etc/webhook/hooks.json
 
 # -- }}}
 
@@ -44,7 +46,7 @@ OTHERFLAGS := -v /etc/hosts:/etc/hosts:ro -v /etc/localtime:/etc/localtime:ro # 
 PORTFLAGS  := -p 9000:9000
 PROXYFLAGS := --build-arg http_proxy=$(http_proxy) --build-arg https_proxy=$(https_proxy) --build-arg no_proxy=$(no_proxy)
 
-RUNFLAGS   := -e PGID=$(PGID) -e PUID=$(PUID) -c 256 -m 256m -e HOOKPARAMS=$(HOOKPARAMS)
+RUNFLAGS   := -e PGID=$(PGID) -e PUID=$(PUID) -c 256 -m 256m -e HOOKPARAMS=$(HOOKPARAMS) -e HOOKSJSON=$(HOOKSJSON) -e HOOKSURL=$(HOOKSURL)
 
 # -- }}}
 
