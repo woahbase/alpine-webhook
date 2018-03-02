@@ -95,8 +95,10 @@ shell :
 stop :
 	docker stop -t 2 docker_$(CNTNAME)
 
-test :
-	docker run --rm -it $(NAMEFLAGS) $(RUNFLAGS) $(PORTFLAGS) $(MOUNTFLAGS) $(OTHERFLAGS) $(IMAGETAG) sh -ec 'sleep 5; webhook -version'
+test : # test armhf on real devices
+	if [ "$(HOSTARCH)" = "armhf ] || [ "$(ARCH)" != "armhf"  ]; then \
+	    docker run --rm -it $(NAMEFLAGS) $(RUNFLAGS) $(PORTFLAGS) $(MOUNTFLAGS) $(OTHERFLAGS) $(IMAGETAG) sh -ec 'sleep 5; webhook -version' \
+	fi;
 
 # -- }}}
 
