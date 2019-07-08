@@ -10,7 +10,7 @@ USERNAME  := woahbase
 PUID       := $(shell id -u)
 PGID       := $(shell id -g)# gid 100(users) usually pre exists
 
-DOCKERSRC := $(OPSYS)-s6#
+DOCKERSRC := $(OPSYS)-glibc#
 DOCKEREPO := $(OPSYS)-$(SVCNAME)
 IMAGETAG  := $(USERNAME)/$(DOCKEREPO):$(ARCH)
 
