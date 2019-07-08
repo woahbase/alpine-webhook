@@ -2,8 +2,8 @@ ARG DOCKERSRC=frommakefile
 #
 FROM ${DOCKERSRC}
 #
-ARG PUID=1000
-ARG PGID=1000
+ARG PUID=1001
+ARG PGID=1001
 #
 RUN set -xe \
     && addgroup -g ${PGID} -S alpine \
@@ -11,10 +11,10 @@ RUN set -xe \
     && apk add --no-cache --purge -uU curl \
     && VERSION=$(curl -SL https://api.github.com/repos/adnanh/webhook/releases/latest | awk '/tag_name/{print $4;exit}' FS='[""]' | sed -e 's_v__') \
     && echo "Using version: $VERSION" \
-    && curl -o /tmp/webhook-linux-amd64.tar.gz -SL https://github.com/adnanh/webhook/releases/download/${VERSION}/webhook-linux-amd64.tar.gz \
-    && tar zxf /tmp/webhook-linux-amd64.tar.gz -C /usr/local \
-    && ln -s /usr/local/webhook-linux-amd64/webhook /usr/local/bin \
-    && chown -R alpine:alpine /usr/local/webhook-linux-amd64/ \
+    && curl -o /tmp/webhook-linux-arm64.tar.gz -SL https://github.com/adnanh/webhook/releases/download/${VERSION}/webhook-linux-arm64.tar.gz \
+    && tar zxf /tmp/webhook-linux-arm64.tar.gz -C /usr/local \
+    && ln -s /usr/local/webhook-linux-arm64/webhook /usr/local/bin \
+    && chown -R alpine:alpine /usr/local/webhook-linux-arm64/ \
     && chown -R alpine:alpine /usr/local/bin/webhook \
     && rm -rf /var/cache/apk/* /tmp/*
 #
