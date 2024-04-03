@@ -1,0 +1,15 @@
+[
+    {
+        "id"                        : "echo-webhook",
+        "execute-command"           : "/bin/ls",
+        "command-working-directory" : "/etc/webhook/",
+        "response-message"          : "ok",
+        "include-command-output-in-response": true
+    },
+    {
+        "id"                        : "version",
+        "execute-command"           : "webhook",
+        "pass-arguments-to-command" : [{ "source": "string", "name": "-version" }],
+        "include-command-output-in-response": true
+    }
+]

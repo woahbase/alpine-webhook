@@ -1,0 +1,10 @@
+#!/usr/bin/with-contenv bash
+set -e
+
+WEBHOOK_JSON="${WEBHOOK_JSON:-/etc/webhook/hooks.json}";
+WEBHOOK_ARGS="${WEBHOOK_ARGS:- -verbose -nopanic -hotreload}";
+
+s6-setuidgid ${S6_USER:-alpine} exec \
+    webhook \
+    -hooks=${WEBHOOK_JSON} \
+    ${WEBHOOK_ARGS};

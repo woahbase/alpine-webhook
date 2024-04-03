@@ -1,8 +1,0 @@
-[
-  {
-    "id"                        : "echo-webhook",
-    "execute-command"           : "ls",
-    "command-working-directory" : "/etc/webhook/",
-    "response-message"          : "ok"
-  }
-]

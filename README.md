@@ -64,13 +64,13 @@ Before you run..
 * config is loaded from `/etc/webhook/hooks.json`, a simple
   default is provided, edit this file or mount your own. The
   location of the the file can be customized by setting the
-  variable `HOOKSJSON`.
+  variable `WEBHOOK_JSON`.
 
 * To fetch the hooks.json file from a url before start, pass it in
-  the env variable `HOOKSURL`.
+  the env variable `WEBHOOK_JSON_URL`.
 
 * For custom runtime parametes, pass them in the environment
-  variable `HOOKPARAMS`. (check the defaults in the `makefile`)
+  variable `WEBHOOK_ARGS`. (check the defaults in the `makefile`)
 
 * Checkout the [docs][137] for more information about writing hooks.
 
@@ -84,8 +84,8 @@ docker run --rm -it \
   --name docker_webhook --hostname webhook \
   -e PGID=1000 -e PUID=1000 \
   -p 9000:9000 \
-  -e HOOKPARAMS="-verbose -ip 0.0.0.0" \
-  -v config/hooks.json:/etc/webhook/hooks.json \
+  -e WEBHOOK_ARGS="-verbose -ip 0.0.0.0" \
+  -v /your/own/hooks.json:/etc/webhook/hooks.json \
   woahbase/alpine-webhook:x86_64
 ```
 
