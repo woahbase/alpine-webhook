@@ -1,31 +1,40 @@
 #!/usr/bin/with-contenv bash
 set -e
 
-WEBHOOK_JSON="${WEBHOOK_JSON:-/etc/webhook/hooks.json}";
-# WEBHOOK_JSON_URL=${WEBHOOK_JSON_URL:-https://raw.githubusercontent.com/woahbase/alpine-webhook/master/root/defaults/hooks.json}
+vecho () { if [ "${S6_VERBOSITY:-1}" -gt 0  ]; then echo "[$0] $@"; fi; }
+
+WEBHOOK_FILE="${WEBHOOK_FILE:-/etc/webhook/hooks.json}";
+# WEBHOOK_FILE_URL=${WEBHOOK_FILE_URL:-https://raw.githubusercontent.com/woahbase/alpine-webhook/master/root/defaults/hooks.json}
 
 mkdir -p \
-    $(dirname $WEBHOOK_JSON) \
+    $(dirname $WEBHOOK_FILE) \
     ;
 
 # fetch hooks json from url if specified
-if [ -n "$WEBHOOK_JSON_URL" ];
+if [ -n "$WEBHOOK_FILE_URL" ];
 then
-    echo "Fetching hooks from ${WEBHOOK_JSON_URL}";
+    vecho "Fetching hooks from ${WEBHOOK_FILE_URL}";
     curl \
         --retry 3 \
         --retry-all-errors \
-        -o ${WEBHOOK_JSON}.tmp \
-        -jSLN "${WEBHOOK_JSON_URL}" \
-    && mv ${WEBHOOK_JSON}.tmp ${WEBHOOK_JSON};
+        -o ${WEBHOOK_FILE}.tmp \
+        -jSLN "${WEBHOOK_FILE_URL}" \
+    && mv ${WEBHOOK_FILE}.tmp ${WEBHOOK_FILE};
 fi;
 
 # ensure webhooks json exists
-if [ ! -f "${WEBHOOK_JSON}" ];
+if [ ! -f "${WEBHOOK_FILE}" ];
 then
-    cp /defaults/hooks.json ${WEBHOOK_JSON};
+    cp /defaults/hooks.json ${WEBHOOK_FILE};
 fi;
 
-chown ${S6_USER:-alpine} \
-    ${WEBHOOK_JSON} \
-    ;
+# fix permissions
+if [ -z "${WEBHOOK_SKIP_PERMFIX}" ] \
+&& [ "X${EUID}" == "X0" ]; # requires root
+then
+    vecho "Fixing permissions.";
+    chown ${S6_USER:-alpine}:${PGID:-1000} \
+        $(dirname ${WEBHOOK_FILE}) \
+        "${WEBHOOK_FILE}" \
+        ;
+fi;

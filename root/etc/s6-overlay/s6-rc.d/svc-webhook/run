@@ -1,10 +1,13 @@
 #!/usr/bin/with-contenv bash
 set -e
 
-WEBHOOK_JSON="${WEBHOOK_JSON:-/etc/webhook/hooks.json}";
+usercmd () { if [ "X${EUID}" != "X0" ]; then ${1} "${@:2}"; else s6-setuidgid ${PUID:-1000}:${PGID:-1000} ${1} "${@:2}"; fi; }
+
+WEBHOOK_FILE="${WEBHOOK_FILE:-/etc/webhook/hooks.json}";
 WEBHOOK_ARGS="${WEBHOOK_ARGS:- -verbose -nopanic -hotreload}";
 
-s6-setuidgid ${S6_USER:-alpine} exec \
+usercmd \
+exec \
     webhook \
-    -hooks=${WEBHOOK_JSON} \
+    -hooks=${WEBHOOK_FILE} \
     ${WEBHOOK_ARGS};
